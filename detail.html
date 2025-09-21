@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐲 Character Details - Dragon Rune Adventure</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="nav-header">
+            <a href="index.html" class="back-link">
+                ← Back to Gallery
+            </a>
+            <h1>🐲 Character Details</h1>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Character Info Display -->
+        <section id="characterInfo" class="character-detail-section">
+            <!-- Character details will be populated by JavaScript -->
+        </section>
+
+        <!-- Character Bag Management -->
+        <section class="bag-section">
+            <h2>🎒 Character Bag</h2>
+            
+            <!-- Add Item Form -->
+            <div class="add-item-form">
+                <h3>✨ Add New Item</h3>
+                <form id="itemForm" class="item-form">
+                    <div class="form-group">
+                        <label for="itemType">Item Type:</label>
+                        <select id="itemType" name="type" required>
+                            <option value="">Choose item type...</option>
+                            <option value="Rune">🔮 Rune - Magical essence</option>
+                            <option value="Weapon">⚔️ Weapon - Combat equipment</option>
+                            <option value="Potion">🧪 Potion - Magical brew</option>
+                            <option value="Treasure">💰 Treasure - Valuable item</option>
+                            <option value="Armor">🛡️ Armor - Protective gear</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemName">Item Name:</label>
+                        <input type="text" id="itemName" name="name" required 
+                               placeholder="Enter item name..." maxlength="100">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemDescription">Description (Optional):</label>
+                        <input type="text" id="itemDescription" name="description" 
+                               placeholder="Brief description of the item..." maxlength="200">
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        ➕ Add to Bag
+                    </button>
+                </form>
+            </div>
+
+            <!-- Bag Contents -->
+            <div class="bag-contents">
+                <div class="bag-header">
+                    <h3>📦 Bag Contents</h3>
+                    <span id="itemCount" class="item-count">0 items</span>
+                </div>
+                
+                <div id="bagItems" class="bag-items">
+                    <div class="empty-bag">
+                        <div class="empty-icon">🎒</div>
+                        <p>Bag is empty</p>
+                        <span>Add your first item above!</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🎮 UCF Front End Track - Week 4 DOM Capstone Project</p>
+    </footer>
+
+    <script src="detail.js"></script>
+</body>
+</html>

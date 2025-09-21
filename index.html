@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐲 Character Gallery - Dragon Rune Adventure</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>🐲 Character Gallery</h1>
+        <p>Create and manage your legendary characters</p>
+    </header>
+
+    <main>
+        <!-- Character Creation Form -->
+        <section class="character-form-section">
+            <h2>✨ Create New Character</h2>
+            <form id="characterForm" class="character-form">
+                <div class="form-group">
+                    <label for="characterType">Character Type:</label>
+                    <select id="characterType" name="type" required>
+                        <option value="">Choose your heritage...</option>
+                        <option value="Dragon">🐲 Dragon - Ancient and powerful</option>
+                        <option value="Human">👤 Human - Clever and adaptable</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="characterName">Character Name:</label>
+                    <input type="text" id="characterName" name="name" required 
+                           placeholder="Enter character name..." maxlength="50">
+                </div>
+
+                <div class="form-group">
+                    <label for="characterDescription">Description:</label>
+                    <textarea id="characterDescription" name="description" required 
+                              placeholder="Describe your character's story and abilities..." 
+                              maxlength="500" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="characterImage">Character Image:</label>
+                    <div class="image-input-group">
+                        <select id="imageSelect" name="imageUrl">
+                            <option value="">Choose a character image...</option>
+                            <option value="dravok.png">🔥 Dravok - Fire Dragon</option>
+                            <option value="faylen.png">💜 Faylen - Mystic Dragon</option>
+                            <option value="mithrond.png">⚡ Mithrond - Lightning Dragon</option>
+                            <option value="neraxis.png">🌿 Neraxis - Earth Dragon</option>
+                            <option value="obon.png">🧡 Obon - Ancient Dragon</option>
+                            <option value="ravenis.png">🌙 Ravenis - Shadow Dragon</option>
+                        </select>
+                        <span class="form-note">Or use custom URL:</span>
+                        <input type="url" id="customImageUrl" name="customImageUrl" 
+                               placeholder="https://example.com/your-image.jpg">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    ⚔️ Create Character
+                </button>
+            </form>
+        </section>
+
+        <!-- Character Gallery -->
+        <section class="gallery-section">
+            <div class="gallery-header">
+                <h2>🏛️ Character Gallery</h2>
+                <div class="gallery-stats">
+                    <span id="characterCount">0 characters</span>
+                    <button id="clearAllBtn" class="btn-danger" style="display: none;">
+                        🗑️ Clear All
+                    </button>
+                </div>
+            </div>
+            
+            <div id="characterGallery" class="character-gallery">
+                <div class="empty-gallery">
+                    <div class="empty-icon">🎭</div>
+                    <h3>No Characters Yet</h3>
+                    <p>Create your first character using the form above!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🎮 UCF Front End Track - Week 4 DOM Capstone Project</p>
+    </footer>
+
+    <script src="gallery.js"></script>
+</body>
+</html>
