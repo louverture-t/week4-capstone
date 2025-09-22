@@ -8,6 +8,7 @@ const clearAllBtn = document.getElementById('clearAllBtn');
 
 // Local Storage Keys
 const CHARACTERS_KEY = 'dragonRuneCharacters';
+const FALLBACK_IMAGE = 'assets/images/ravenis.png';
 
 // Character management
 class CharacterManager {
@@ -43,39 +44,23 @@ class CharacterManager {
         characterForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
         clearAllBtn.addEventListener('click', () => this.clearAllCharacters());
 
-        // Handle custom image URL
-        const imageSelect = document.getElementById('imageSelect');
-        const customImageUrl = document.getElementById('customImageUrl');
-
-        imageSelect.addEventListener('change', () => {
-            if (imageSelect.value) {
-                customImageUrl.value = '';
-                customImageUrl.disabled = true;
-            } else {
-                customImageUrl.disabled = false;
-            }
-        });
-
-        customImageUrl.addEventListener('input', () => {
-            if (customImageUrl.value.trim()) {
-                imageSelect.value = '';
-            }
-        });
+        // Local images only; no custom URL field
     }
 
     // Handle form submission
     handleFormSubmit(event) {
         event.preventDefault();
 
-        // Get form data
+        // Get form data (local images only)
         const formData = new FormData(characterForm);
+        const imageFile = (formData.get('imageUrl') || '').toString().trim();
         const characterData = {
-            id: Date.now(), // Simple unique ID
+            id: Date.now(),
             type: formData.get('type'),
             name: formData.get('name').trim(),
             description: formData.get('description').trim(),
-            imageUrl: formData.get('customImageUrl').trim() || formData.get('imageUrl'),
-            bag: [], // Initialize empty bag
+            imageUrl: imageFile ? `assets/images/${imageFile}` : '',
+            bag: [],
             createdAt: new Date().toISOString()
         };
 
@@ -100,13 +85,13 @@ class CharacterManager {
             return false;
         }
 
-        if (!data.description || data.description.length < 10) {
-            this.showMessage('Please provide a description (at least 10 characters)!', 'error');
+        if (!data.description || data.description.length < 5) {
+            this.showMessage('Please provide a description (at least 5 characters)!', 'error');
             return false;
         }
 
         if (!data.imageUrl) {
-            this.showMessage('Please select or provide a character image!', 'error');
+            this.showMessage('Please select an image from assets/images!', 'error');
             return false;
         }
 
@@ -136,7 +121,6 @@ class CharacterManager {
     // Reset form
     resetForm() {
         characterForm.reset();
-        document.getElementById('customImageUrl').disabled = false;
     }
 
     // Render character gallery
@@ -181,21 +165,51 @@ class CharacterManager {
         card.className = 'character-card';
         card.setAttribute('data-index', index);
 
-        // Handle image source
-        const imageSrc = character.imageUrl.includes('://') 
-            ? character.imageUrl 
-            : character.imageUrl; // Assume local images are in same directory
+        // Handle image source with local fallback and prefix if needed
+        let imageSrc = character.imageUrl || '';
+        if (imageSrc && !imageSrc.includes('/')) {
+            imageSrc = `assets/images/${imageSrc}`;
+        }
+        if (!imageSrc) imageSrc = FALLBACK_IMAGE;
 
         card.innerHTML = `
-            <img src="${imageSrc}" alt="${character.name}" class="character-image" 
-                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNDQ0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">
+            <img src="${imageSrc}" alt="${character.name}" class="character-image" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'">
             <div class="character-name">${character.name}</div>
             <div class="character-type">${this.getTypeEmoji(character.type)} ${character.type}</div>
             <div class="character-description">${character.description}</div>
         `;
 
-        // Add click handler
-        card.addEventListener('click', () => this.viewCharacter(index));
+        // Add click handler (excluding delete)
+        card.addEventListener('click', (ev) => {
+            const target = ev.target;
+            if (target && target.classList.contains('btn-delete')) return;
+            this.viewCharacter(index);
+        });
+
+        // Per-card delete button
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-danger btn-delete';
+        delBtn.type = 'button';
+        delBtn.textContent = 'Delete';
+        delBtn.style.marginTop = '12px';
+        delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (confirm(`Delete ${character.name}? This cannot be undone.`)) {
+                this.characters.splice(index, 1);
+                this.saveCharacters();
+                // Clear invalid selected index
+                const sel = sessionStorage.getItem('selectedCharacterIndex');
+                if (sel !== null) {
+                    const n = Number(sel);
+                    if (!Number.isInteger(n) || n >= this.characters.length) {
+                        sessionStorage.removeItem('selectedCharacterIndex');
+                    }
+                }
+                this.renderGallery();
+                this.showMessage('Character deleted.', 'success');
+            }
+        });
+        card.appendChild(delBtn);
 
         return card;
     }
@@ -342,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') {
             if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
                 characterForm.reset();
-                document.getElementById('customImageUrl').disabled = false;
             }
         }
     });

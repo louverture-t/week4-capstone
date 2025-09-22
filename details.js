@@ -8,6 +8,7 @@ const itemCount = document.getElementById('itemCount');
 
 // Local Storage Keys
 const CHARACTERS_KEY = 'dragonRuneCharacters';
+const FALLBACK_IMAGE = 'assets/images/ravenis.png';
 
 // Character Detail Manager
 class CharacterDetailManager {
@@ -97,14 +98,11 @@ class CharacterDetailManager {
             : 'Unknown';
 
         // Handle image source
-        const imageSrc = this.character.imageUrl.includes('://') 
-            ? this.character.imageUrl 
-            : this.character.imageUrl;
+        const imageSrc = this.character.imageUrl || FALLBACK_IMAGE;
 
         characterInfo.innerHTML = `
             <div class="character-detail">
-                <img src="${imageSrc}" alt="${this.character.name}" class="character-detail-image"
-                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNDQ0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">
+                <img src="${imageSrc}" alt="${this.character.name}" class="character-detail-image" onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}'">
                 
                 <div class="character-info">
                     <h2>${this.character.name}</h2>
@@ -270,11 +268,7 @@ class CharacterDetailManager {
                 </div>
                 ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
             </div>
-            <div class="item-actions">
-                <button class="btn-small btn-remove" onclick="characterDetailManager.removeItem(${index})">
-                    🗑️ Remove
-                </button>
-            </div>
+            <div class="item-actions"></div>
         `;
 
         // Add animation class for new items
